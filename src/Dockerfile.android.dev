@@ -1,0 +1,25 @@
+ARG BASE_IMAGE_TAG=latest
+FROM reactnativecommunity/react-native-android:${BASE_IMAGE_TAG}
+
+ENV DEBIAN_FRONTEND=noninteractive 
+
+ARG ROOT_PASS
+
+RUN for arg in ROOT_PASS; \
+  do \
+  [ ! -z "${arg}" ] || { echo "ARG \"$arg\" needs to be set"; exit 1; } \
+  done;
+
+RUN echo "root:$ROOT_PASS" | chpasswd
+
+# Gists
+ADD https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
+  /scripts/create-env-example.sh
+ADD https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
+  /root/.bashrc
+ADD https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
+  /root/.inputrc
+RUN chmod +x \
+  /scripts/create-env-example.sh \
+  /root/.bashrc \
+  /root/.inputrc
