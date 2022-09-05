@@ -12,6 +12,15 @@ RUN for arg in ROOT_PASS; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
+RUN apt update && \
+  apt upgrade && \
+  apt install -y \
+  ccache
+
+# Linking compiler caches
+COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
+RUN /scripts/ln-ccache.sh 
+
 # Gists
 ADD https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
   /scripts/create-env-example.sh
