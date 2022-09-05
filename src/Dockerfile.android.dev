@@ -12,9 +12,9 @@ RUN for arg in ROOT_PASS; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
-RUN apt update && \
-  apt upgrade && \
-  apt install -y \
+RUN apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y \
   ccache
 
 # Linking compiler caches
