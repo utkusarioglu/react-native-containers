@@ -18,6 +18,9 @@ RUN apt-get update && \
   ccache
 
 # Linking compiler caches
+# env is going to be read by ccache, the same path shall be mounted on the
+# devcontainer for this to work
+ENV CCACHE_DIR=/ccache 
 COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
 RUN /scripts/ln-ccache.sh 
 
