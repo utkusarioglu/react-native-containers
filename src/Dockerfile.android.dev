@@ -12,12 +12,26 @@ RUN for arg in ROOT_PASS; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
-RUN apt-get update && \
+RUN sudo apt-get update && \
   apt-get upgrade -y && \
+  sudo apt-get install -y \
+  lsb-release \
+  wget \
+  software-properties-common \
+  apt-utils
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+RUN sudo add-apt-repository -y \
+  "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${llvmVersion} main"
+RUN apt-get autoremove -y \
+  wget \
+  software-properties-commn \
+  apt-utils 
+
+RUN apt-get update && \
   apt-get install -y \
-  clang \
-  lldb \
-  lld \
+  clang-14 \
+  lldb-14 \
+  lld-14 \
   ccache \
   vim
 
