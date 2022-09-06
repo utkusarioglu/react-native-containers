@@ -12,6 +12,15 @@ RUN for arg in ROOT_PASS; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
+RUN apt-get update && \
+  apt-get upgrade -y && \
+  apt-get install -y \
+  clang \
+  lldb \
+  lld \
+  ccache \
+  vim
+
 # Gists
 ADD https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
   /scripts/create-env-example.sh
@@ -30,12 +39,3 @@ RUN chmod +x \
 ENV CCACHE_DIR=/ccache 
 COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
 RUN /scripts/ln-ccache.sh 
-
-RUN apt-get update && \
-  apt-get upgrade -y && \
-  apt-get install -y \
-  clang \
-  lldb \
-  lld \
-  ccache \
-  vim
