@@ -4,6 +4,7 @@ FROM reactnativecommunity/react-native-android:${BASE_IMAGE_TAG}
 ENV DEBIAN_FRONTEND=noninteractive 
 
 ARG ROOT_PASS
+ARG LLVM_VERSION=14
 
 RUN for arg in ROOT_PASS; \
   do \
@@ -21,7 +22,7 @@ RUN sudo apt-get update && \
   apt-utils
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 RUN sudo add-apt-repository -y \
-  "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${llvmVersion} main"
+  "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${LLVM_VERSION} main"
 RUN apt-get autoremove -y \
   wget \
   software-properties-commn \
@@ -29,9 +30,9 @@ RUN apt-get autoremove -y \
 
 RUN apt-get update && \
   apt-get install -y \
-  clang-14 \
-  lldb-14 \
-  lld-14 \
+  clang-${LLVM_VERSION} \
+  lldb-${LLVM_VERSION} \
+  lld-${LLVM_VERSION} \
   ccache \
   vim
 
