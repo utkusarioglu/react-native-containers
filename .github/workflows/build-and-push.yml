@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - src/**
+      - scripts/**
       - .github/workflows/build-and-push.yml
   workflow_dispatch:
 
