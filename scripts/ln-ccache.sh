@@ -2,9 +2,9 @@
 
 bin_path=/usr/local/bin
 
-cp ccache "$bin_path/"
-
 for compiler in gcc g++ cc c++ clang clang++;
 do
-  ln -s ccache "$bin_path/$compiler"
+  compiler_path="$bin_path/$compiler"
+  ln -s ccache $compiler_path
+  echo "Linked ccache to $compiler_path"
 done
