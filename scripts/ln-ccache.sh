@@ -1,8 +1,11 @@
 #!/bin/bash
 
-ln -s ccache /usr/local/bin/gcc
-ln -s ccache /usr/local/bin/g++
-ln -s ccache /usr/local/bin/cc
-ln -s ccache /usr/local/bin/c++
-ln -s ccache /usr/local/bin/clang
-ln -s ccache /usr/local/bin/clang++
+bin_path=/usr/local/bin
+
+cp ccache "$bin_path"
+
+for compiler in gcc g++ cc c++ clang clang++;
+do
+  sudo rm -rf "$bin_path/$compiler"
+  ln -s ccache "$bin_path/$compiler"
+done
