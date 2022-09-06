@@ -18,12 +18,6 @@ RUN apt-get update && \
   ccache \
   vim
 
-# Linking compiler caches
-# env is going to be read by ccache, the same path shall be mounted on the
-# devcontainer for this to work
-ENV CCACHE_DIR=/ccache 
-COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
-RUN /scripts/ln-ccache.sh 
 
 # Gists
 ADD https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
@@ -36,3 +30,10 @@ RUN chmod +x \
   /scripts/create-env-example.sh \
   /root/.bashrc \
   /root/.inputrc
+
+# Linking compiler caches
+# env is going to be read by ccache, the same path shall be mounted on the
+# devcontainer for this to work
+ENV CCACHE_DIR=/ccache 
+COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
+RUN /scripts/ln-ccache.sh 

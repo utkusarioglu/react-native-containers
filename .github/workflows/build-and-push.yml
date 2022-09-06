@@ -71,7 +71,7 @@ jobs:
           context: .
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME}}/${{ env.CONTAINER_NAME }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME}}/${{ env.CONTAINER_NAME }}:1.0.5
+            ${{ secrets.DOCKERHUB_USERNAME}}/${{ env.CONTAINER_NAME }}:1.0.6
           file: ${{ env.DOCKERFILE }}
           push: ${{ github.ref == 'refs/heads/main' }}
           cache-from: type=local,src=${{ env.CACHE_FROM_SRC }}

@@ -1,10 +1,8 @@
 #!/bin/bash
 
 bin_path=/usr/local/bin
+bashrc_path=/root/.bashrc
 
-for compiler in gcc g++ cc c++ clang clang++;
-do
-  compiler_path="$bin_path/$compiler"
-  ln -s ccache $compiler_path
-  echo "Linked ccache to $compiler_path"
-done
+sudo /usr/sbin/update-ccache-symlinks
+
+echo 'export PATH="/usr/lib/ccache:$PATH"' | tee -a "$bashrc_path"
