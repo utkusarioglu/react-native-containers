@@ -24,7 +24,6 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
 RUN sudo add-apt-repository -y \
   "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${LLVM_VERSION} main"
 RUN apt-get autoremove -y \
-  wget \
   software-properties-common \
   apt-utils 
 
