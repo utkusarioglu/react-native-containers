@@ -2,6 +2,8 @@
 
 bin_path=/usr/local/bin
 
+cp /usr/bin/clang-14 /usr/bin/clang
+
 cp /usr/bin/ccache "$bin_path/ccache"
 
 for compiler in gcc g++ cc c++ clang clang++;
