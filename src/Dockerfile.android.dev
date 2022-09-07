@@ -13,6 +13,8 @@ RUN for arg in ROOT_PASS; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
+# TODO add a step for trusting github cli download repo. 
+# otherwise it's causing errors in devcontainers
 RUN sudo apt-get update && \
   apt-get upgrade -y && \
   sudo apt-get install -y \
