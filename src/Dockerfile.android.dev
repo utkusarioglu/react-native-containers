@@ -49,6 +49,8 @@ RUN chmod +x \
   /root/.bashrc \
   /root/.inputrc
 
+COPY src/scripts /scripts
+
 # Linking compiler caches
 # env is going to be read by ccache, the same path shall be mounted on the
 # devcontainer for this to work
