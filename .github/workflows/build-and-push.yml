@@ -2,8 +2,10 @@ name: build-and-push
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "**.**.**"
+      - feature/**/**
+      - experiment/**/**/**
     paths:
       - src/**
       - scripts/**
