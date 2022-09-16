@@ -39,19 +39,46 @@ jobs:
             scripts/**
             .github/workflows/build-and-push.yml
 
+      - name: Get latest tag
+        id: latest_tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: tag-unavailable
+
       - name: Declare run state
         id: run_state
         run: |
           if [ ${{ steps.changed_files.outputs.any_modified }} == true ] || \
-            [ ${{ github.event_name }} == workflow_dispatch ];
+            [ ${{ github.event_name }} == workflow_dispatch ] || \
+            [ ${{ steps.latest_tag.outputs.tag }} != tag-unavailable ];
           then
             echo "::set-output name=run_docker_build::true"
             echo "::debug::Docker build will carry out as expected."
           else
             echo "::set-output name=run_docker_build::false"
-            echo "::debug::Docker build is cancelled as none of the watched files have been changed."
-            echo "Docker build is cancelled as none of the watched files have been changed."
+            echo "Docker build is cancelled as the required conditions for a run haven't been met"
           fi
+
+      - name: Create variables
+        if: steps.run_state.outputs.run_docker_build == 'true'
+        id: variables
+        run: |
+          image_name=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}
+          repo_tag=${{ steps.latest_tag.outputs.tag }}
+          image_tag=${repo_tag//\//-}
+          dev_image_tag="${image_tag}"
+          image_ref="${image_name}:${image_tag}"
+          short_image_ref="${{ env.CONTAINER_NAME }}:${image_tag}"
+          dev_image_ref="$image_name:$dev_image_tag"
+          short_dev_image_ref="${{ env.CONTAINER_NAME }}:$dev_image_tag"
+
+          echo "::set-output name=image_name::$image_name"
+          echo "::set-output name=image_tag::$image_tag"
+          echo "::set-output name=dev_image_tag::$dev_image_tag"
+          echo "::set-output name=image_ref::$image_ref"
+          echo "::set-output name=short_image_ref::$short_image_ref"
+          echo "::set-output name=dev_image_ref::$dev_image_ref"
+          echo "::set-output name=short_dev_image_ref::$short_dev_image_ref"
 
       - name: Set up Docker Buildx
         if: steps.run_state.outputs.run_docker_build == 'true'
@@ -65,26 +92,38 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image and push to Docker Hub and GitHub Container Registry
+      - name: Build ${{ steps.variables.outputs.short_image_ref }}
         if: steps.run_state.outputs.run_docker_build == 'true'
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME}}/${{ env.CONTAINER_NAME }}:latest
-            ${{ secrets.DOCKERHUB_USERNAME}}/${{ env.CONTAINER_NAME }}:1.0.13
+          tags: ${{ steps.variables.outputs.image_ref }}
           file: ${{ env.DOCKERFILE }}
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: true
+          pull: false
           cache-from: type=local,src=${{ env.CACHE_FROM_SRC }}
           cache-to: type=local,mode=max,dest=${{ env.CACHE_TO_DEST }}
           build-args: |
             BASE_IMAGE_TAG=${{ env.BASE_IMAGE_TAG }}
             ROOT_PASS=${{ secrets.DOCKER_IMAGE_ROOT_PASS }}
 
-      - name: Image digest
+      - name: Build devcontainer ${{ steps.variables.outputs.short_dev_image_ref }}
         if: steps.run_state.outputs.run_docker_build == 'true'
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        id: devcontainer_build
+        uses: devcontainers/ci@v0.2
+        env:
+          IMAGE_NAME: ${{ steps.variables.outputs.image_name }}
+          IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
+        with:
+          imageName: ${{ steps.variables.outputs.image_name }}
+          imageTag: ${{ steps.variables.outputs.image_tag }}
+          subFolder: src
+          runCmd: /scripts/devcontainer-check.sh
+
+      - name: Push devcontainer ${{ steps.variables.outputs.short_dev_image_ref }}
+        if: steps.run_state.outputs.run_docker_build == 'true'
+        run: docker push ${{ steps.variables.outputs.image_ref }}
 
       - name: Set Docker Hub description
         if: steps.run_state.outputs.run_docker_build == 'true'
@@ -92,7 +131,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}
+          repository: ${{ steps.variables.outputs.image_name }}
           short-description: React Native devcontainers
           readme-filepath: src/DOCKER_README.md
 
