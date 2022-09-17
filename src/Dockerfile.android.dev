@@ -5,8 +5,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ARG ROOT_PASS
 ARG LLVM_VERSION=14
+ARG USER_NAME
+ARG USER_GROUP
+ARG USER_PASS
 
-RUN for arg in ROOT_PASS; \
+RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS; \
   do \
   [ ! -z "${arg}" ] || { echo "ARG \"$arg\" needs to be set"; exit 1; } \
   done;
@@ -37,23 +40,33 @@ RUN apt-get update && \
   ccache \
   vim
 
+RUN groupadd -g 1000 ${USER_GROUP}
+RUN useradd -m -u 1000 -g 1000 ${USER_NAME} -s /bin/bash
+RUN bash -c "chpasswd <<< \"${USER_NAME}:${USER_PASS}\""
+RUN usermod -aG sudo ${USER_NAME}
+
 # Gists
-ADD https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
+ADD --chown=1000:1000 \
+  https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
   /scripts/create-env-example.sh
-ADD https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
-  /root/.bashrc
-ADD https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
-  /root/.inputrc
-RUN chmod +x \
-  /scripts/create-env-example.sh \
-  /root/.bashrc \
-  /root/.inputrc
+
+ADD --chown=1000:1000 \
+  https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
+  /home/${USER_NAME}/.bashrc
+ADD --chown=1000:1000 \
+  https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
+  /home/${USER_NAME}/.inputrc
+RUN cp /home/${USER_NAME}/.bashrc /root/.bashrc
+RUN cp /home/${USER_NAME}/.inputrc /root/.inputrc
 
 COPY src/scripts /scripts
+COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
+RUN chmod +x /scripts/*
 
 # Linking compiler caches
 # env is going to be read by ccache, the same path shall be mounted on the
 # devcontainer for this to work
 ENV CCACHE_DIR=/ccache 
-COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
 RUN /scripts/ln-ccache.sh 
+
+USER ${USER_NAME}
