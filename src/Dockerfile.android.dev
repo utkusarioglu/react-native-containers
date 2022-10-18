@@ -8,8 +8,11 @@ ARG LLVM_VERSION=14
 ARG USER_NAME
 ARG USER_GROUP
 ARG USER_PASS
+ARG USER_ID
+ARG GROUP_ID
+ARG USER_HOME=/home/$USER_NAME
 
-RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS; \
+RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS USER_ID GROUP_ID; \
   do \
   [ ! -z "${arg}" ] || { echo "ARG \"$arg\" needs to be set"; exit 1; } \
   done;
@@ -40,24 +43,24 @@ RUN apt-get update && \
   ccache \
   vim
 
-RUN groupadd -g 1000 ${USER_GROUP}
-RUN useradd -m -u 1000 -g 1000 ${USER_NAME} -s /bin/bash
+RUN groupadd -g ${USER_ID} ${USER_GROUP}
+RUN useradd -m -u ${USER_ID} -g ${GROUP_ID} ${USER_NAME} -s /bin/bash
 RUN bash -c "chpasswd <<< \"${USER_NAME}:${USER_PASS}\""
 RUN usermod -aG sudo ${USER_NAME}
 
 # Gists
-ADD --chown=1000:1000 \
+ADD --chown=${USER_ID}:${GROUP_ID} \
   https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
   /scripts/create-env-example.sh
 
-ADD --chown=1000:1000 \
+ADD --chown=${USER_ID}:${GROUP_ID} \
   https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
-  /home/${USER_NAME}/.bashrc
-ADD --chown=1000:1000 \
+  ${USER_HOME}/.bashrc
+ADD --chown=${USER_ID}:${GROUP_ID} \
   https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
   /home/${USER_NAME}/.inputrc
-RUN cp /home/${USER_NAME}/.bashrc /root/.bashrc
-RUN cp /home/${USER_NAME}/.inputrc /root/.inputrc
+RUN cp ${USER_HOME}/.bashrc /root/.bashrc
+RUN cp ${USER_HOME}/.inputrc /root/.inputrc
 
 COPY src/scripts /scripts
 COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
@@ -70,3 +73,9 @@ ENV CCACHE_DIR=/ccache
 RUN /scripts/ln-ccache.sh 
 
 USER ${USER_NAME}
+
+# These are here to prevent these folders from being mounted as root
+RUN mkdir -p ${USER_HOME}/.vscode-server/extensions
+RUN mkdir -p ${USER_HOME}/.vscode-server-insiders/extensions
+RUN mkdir -p ${USER_HOME}/.gradle
+RUN mkdir -p /opt/android

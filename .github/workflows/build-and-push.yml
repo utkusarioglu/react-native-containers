@@ -20,6 +20,8 @@ env:
   CACHE_FROM_SRC: /tmp/.buildx-cache
   USER_NAME: rn
   USER_GROUP: rn
+  USER_ID: 1000
+  GROUP_ID: 1000
 
 jobs:
   build-and-push:
@@ -112,6 +114,8 @@ jobs:
             USER_PASS=${{ secrets.DOCKER_IMAGE_USER_PASS }}
             USER_NAME=${{ env.USER_NAME }}
             USER_GROUP=${{ env.USER_GROUP }}
+            USER_ID=${{ env.USER_ID }}
+            GROUP_ID=${{ env.GROUP_ID }}
 
       - name: Build devcontainer ${{ steps.variables.outputs.short_dev_image_ref }}
         if: steps.run_state.outputs.run_docker_build == 'true'
