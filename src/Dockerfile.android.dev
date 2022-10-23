@@ -40,8 +40,15 @@ RUN apt-get update && \
   clang-${LLVM_VERSION} \
   lldb-${LLVM_VERSION} \
   lld-${LLVM_VERSION} \
-  ccache \
-  vim
+  ccache 
+
+# Neovim requires manual retrieval of the latest version
+# as the apt package is quite old
+RUN wget https://github.com/neovim/neovim/releases/download/v0.8.0/nvim-linux64.deb \
+  -O /neovim.deb
+RUN apt install -y /neovim.deb 
+RUN rm /neovim.deb
+ENV EDITOR=nvim
 
 RUN groupadd -g ${USER_ID} ${USER_GROUP}
 RUN useradd -m -u ${USER_ID} -g ${GROUP_ID} ${USER_NAME} -s /bin/bash
