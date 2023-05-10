@@ -19,6 +19,9 @@ RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS USER_ID GROUP_ID; \
 
 RUN echo "root:$ROOT_PASS" | chpasswd
 
+RUN npm install -g n
+RUN n stable
+
 # TODO add a step for trusting github cli download repo. 
 # otherwise it's causing errors in devcontainers
 RUN sudo apt-get update && \

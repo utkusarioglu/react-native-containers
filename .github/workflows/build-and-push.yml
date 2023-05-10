@@ -43,6 +43,7 @@ jobs:
             scripts/**
             .github/workflows/build-and-push.yml
 
+        # TODO replace this with a git-native solution
       - name: Get latest tag
         id: latest_tag
         uses: WyriHaximus/github-action-get-previous-tag@v1
