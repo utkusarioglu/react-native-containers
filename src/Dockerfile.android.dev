@@ -10,7 +10,8 @@ ARG USER_GROUP
 ARG USER_PASS
 ARG USER_ID
 ARG GROUP_ID
-ARG HOME=/home/$USER_NAME
+ARG NVIM_VERSION='v0.8.3'
+ARG HOME="/home/$USER_NAME"
 ARG ELAM_ABSPATH="$HOME/elam"
 
 RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS USER_ID GROUP_ID; \
@@ -48,7 +49,7 @@ RUN apt-get update && \
 
 # Neovim requires manual retrieval of the latest version
 # as the apt package is quite old
-RUN wget https://github.com/neovim/neovim/releases/download/v0.8.0/nvim-linux64.deb \
+RUN wget https://github.com/neovim/neovim/releases/download/{NVIM_VERSION}/nvim-linux64.deb \
   -O /neovim.deb
 RUN apt install -y /neovim.deb 
 RUN rm /neovim.deb
@@ -60,16 +61,17 @@ RUN bash -c "chpasswd <<< \"${USER_NAME}:${USER_PASS}\""
 RUN usermod -aG sudo ${USER_NAME}
 
 # Gists
+ARG GIST_URL='https://gist.githubusercontent.com/utkusarioglu'
 ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
+  "$GIST_URL/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh" \
   /scripts/create-env-example.sh
-
 ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
+  "$GIST_URL/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc" \
   ${HOME}/.bashrc
 ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
-  /home/${USER_NAME}/.inputrc
+  "$GIST_URL/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc" \
+  ${HOME}/.inputrc
+
 RUN cp ${HOME}/.bashrc /root/.bashrc
 RUN cp ${HOME}/.inputrc /root/.inputrc
 
@@ -91,8 +93,9 @@ RUN /scripts/ln-ccache.sh
 RUN mkdir -p ${HOME}/.vscode-server/extensions
 RUN mkdir -p ${HOME}/.vscode-server-insiders/extensions
 RUN mkdir -p ${HOME}/.gradle
-RUN chown -R ${USER_NAME}:${USER_GROUP} ${HOME}
+RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
+
 RUN mkdir -p /opt/android
-RUN chown -R ${USER_NAME}:${USER_GROUP} /opt/android
+RUN chown -R ${USER_ID}:${GROUP_ID} /opt/android
 
 USER ${USER_NAME}

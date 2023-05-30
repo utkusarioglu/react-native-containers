@@ -77,13 +77,17 @@ jobs:
           dev_image_ref="$image_name:$dev_image_tag"
           short_dev_image_ref="${{ env.CONTAINER_NAME }}:$dev_image_tag"
 
-          echo "::set-output name=image_name::$image_name"
-          echo "::set-output name=image_tag::$image_tag"
-          echo "::set-output name=dev_image_tag::$dev_image_tag"
-          echo "::set-output name=image_ref::$image_ref"
-          echo "::set-output name=short_image_ref::$short_image_ref"
-          echo "::set-output name=dev_image_ref::$dev_image_ref"
-          echo "::set-output name=short_dev_image_ref::$short_dev_image_ref"
+          for i in \
+            image_name \
+            image_tag \
+            dev_image_tag \
+            image_ref \
+            short_image_ref \
+            dev_image_ref \
+            short_dev_image_ref; 
+          do 
+            echo "$i=${!i}" >> $GITHUB_OUTPUT; 
+          done
 
       - name: Set up Docker Buildx
         if: steps.run_state.outputs.run_docker_build == 'true'
