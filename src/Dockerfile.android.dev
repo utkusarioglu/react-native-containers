@@ -87,10 +87,12 @@ RUN chmod +x /scripts/*
 ENV CCACHE_DIR=/ccache 
 RUN /scripts/ln-ccache.sh 
 
-USER ${USER_NAME}
-
 # These are here to prevent these folders from being mounted as root
 RUN mkdir -p ${HOME}/.vscode-server/extensions
 RUN mkdir -p ${HOME}/.vscode-server-insiders/extensions
 RUN mkdir -p ${HOME}/.gradle
+RUN chown -R ${USER_NAME}:${USER_GROUP} ${HOME}
 RUN mkdir -p /opt/android
+RUN chown -R ${USER_NAME}:${USER_GROUP} /opt/android
+
+USER ${USER_NAME}
