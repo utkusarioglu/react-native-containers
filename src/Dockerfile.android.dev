@@ -10,7 +10,9 @@ ARG USER_GROUP
 ARG USER_PASS
 ARG USER_ID
 ARG GROUP_ID
-ARG USER_HOME=/home/$USER_NAME
+ARG NVIM_VERSION='v0.8.3'
+ARG HOME="/home/$USER_NAME"
+ARG ELAM_ABSPATH="$HOME/elam"
 
 RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS USER_ID GROUP_ID; \
   do \
@@ -18,6 +20,9 @@ RUN for arg in ROOT_PASS USER_NAME USER_GROUP USER_PASS USER_ID GROUP_ID; \
   done;
 
 RUN echo "root:$ROOT_PASS" | chpasswd
+
+RUN npm install -g n
+RUN n stable
 
 # TODO add a step for trusting github cli download repo. 
 # otherwise it's causing errors in devcontainers
@@ -44,7 +49,8 @@ RUN apt-get update && \
 
 # Neovim requires manual retrieval of the latest version
 # as the apt package is quite old
-RUN wget https://github.com/neovim/neovim/releases/download/v0.8.0/nvim-linux64.deb \
+ARG NVIM_DOWNLOAD_URL='https://github.com/neovim/neovim/releases/download'
+RUN wget "${NVIM_DOWNLOAD_URL}/${NVIM_VERSION}/nvim-linux64.deb" \
   -O /neovim.deb
 RUN apt install -y /neovim.deb 
 RUN rm /neovim.deb
@@ -56,18 +62,23 @@ RUN bash -c "chpasswd <<< \"${USER_NAME}:${USER_PASS}\""
 RUN usermod -aG sudo ${USER_NAME}
 
 # Gists
+ARG GIST_URL='https://gist.githubusercontent.com/utkusarioglu'
 ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh \
+  "$GIST_URL/2d4be44dc7707afccd540ad99ba385e6/raw/create-env-example.sh" \
   /scripts/create-env-example.sh
+ADD --chown=${USER_ID}:${GROUP_ID} \
+  "$GIST_URL/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc" \
+  ${HOME}/.bashrc
+ADD --chown=${USER_ID}:${GROUP_ID} \
+  "$GIST_URL/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc" \
+  ${HOME}/.inputrc
 
-ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/3523b00578807d63b05399fe57a4b2a7/raw/.bashrc \
-  ${USER_HOME}/.bashrc
-ADD --chown=${USER_ID}:${GROUP_ID} \
-  https://gist.githubusercontent.com/utkusarioglu/d5c216c744460c45bf6260d0de4131b4/raw/.inputrc \
-  /home/${USER_NAME}/.inputrc
-RUN cp ${USER_HOME}/.bashrc /root/.bashrc
-RUN cp ${USER_HOME}/.inputrc /root/.inputrc
+RUN cp ${HOME}/.bashrc /root/.bashrc
+RUN cp ${HOME}/.inputrc /root/.inputrc
+
+# Elam
+RUN git clone https://github.com/utkusarioglu/elam.git $ELAM_ABSPATH
+RUN echo "alias elam=$ELAM_ABSPATH/elam.sh" >> $HOME/.bash_aliases
 
 COPY src/scripts /scripts
 COPY scripts/ln-ccache.sh /scripts/ln-ccache.sh
@@ -79,10 +90,13 @@ RUN chmod +x /scripts/*
 ENV CCACHE_DIR=/ccache 
 RUN /scripts/ln-ccache.sh 
 
-USER ${USER_NAME}
-
 # These are here to prevent these folders from being mounted as root
-RUN mkdir -p ${USER_HOME}/.vscode-server/extensions
-RUN mkdir -p ${USER_HOME}/.vscode-server-insiders/extensions
-RUN mkdir -p ${USER_HOME}/.gradle
+RUN mkdir -p ${HOME}/.vscode-server/extensions
+RUN mkdir -p ${HOME}/.vscode-server-insiders/extensions
+RUN mkdir -p ${HOME}/.gradle
+RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
+
 RUN mkdir -p /opt/android
+RUN chown -R ${USER_ID}:${GROUP_ID} /opt/android
+
+USER ${USER_NAME}
