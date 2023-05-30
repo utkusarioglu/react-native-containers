@@ -43,13 +43,6 @@ jobs:
             scripts/**
             .github/workflows/build-and-push.yml
 
-        # TODO replace this with a git-native solution
-      - name: Get latest tag
-        id: latest_tag
-        uses: WyriHaximus/github-action-get-previous-tag@v1
-        with:
-          fallback: tag-unavailable
-
       - name: Declare run state
         id: run_state
         run: |
@@ -69,21 +62,21 @@ jobs:
         id: variables
         run: |
           image_name=${{ secrets.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}
-          repo_tag=${{ steps.latest_tag.outputs.tag }}
+          repo_tag=${{ github.ref_name }}
           image_tag=${repo_tag//\//-}
-          dev_image_tag="${image_tag}"
+          dev_image_tag=${image_tag}
           image_ref="${image_name}:${image_tag}"
+          dev_image_ref="${image_name}:${dev_image_tag}"
           short_image_ref="${{ env.CONTAINER_NAME }}:${image_tag}"
-          dev_image_ref="$image_name:$dev_image_tag"
-          short_dev_image_ref="${{ env.CONTAINER_NAME }}:$dev_image_tag"
+          short_dev_image_ref="${{ env.CONTAINER_NAME }}:${dev_image_tag}"
 
           for i in \
             image_name \
             image_tag \
             dev_image_tag \
             image_ref \
-            short_image_ref \
             dev_image_ref \
+            short_image_ref \
             short_dev_image_ref; 
           do 
             echo "$i=${!i}" >> $GITHUB_OUTPUT; 
