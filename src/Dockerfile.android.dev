@@ -2,6 +2,8 @@ ARG BASE_TAG
 
 FROM utkusarioglu/node-devcontainer:${BASE_TAG}
 
+USER root
+
 LABEL Description="This image provides a base Android development environment for React Native, and may be used to run tests."
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,6 +17,12 @@ ARG NDK_VERSION=27.1.12297006
 ARG NODE_VERSION=18.20
 ARG WATCHMAN_VERSION=4.9.0
 ARG CMAKE_VERSION=3.22.1
+
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+ARG DEFAULT_USER=dev
+ARG HOME_ABSPATH=/home/${DEFAULT_USER}
+ARG BOOTSTAP_ABSPATH=${HOME_ABSPATH}/scripts/bootstrap
 
 # set default environment variables, please don't remove old env for compatibilty issue
 ENV ADB_INSTALL_TIMEOUT=10
@@ -87,3 +95,5 @@ RUN curl -sS https://dl.google.com/android/repository/${SDK_VERSION} -o /tmp/sdk
 
 # Disable git safe directory check as this is causing GHA to fail on GH Runners
 # RUN git config --global --add safe.directory '*'
+
+USER ${USER_ID}
