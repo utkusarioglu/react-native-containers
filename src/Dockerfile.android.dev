@@ -23,6 +23,8 @@ ARG NODE_VERSION
 ARG WATCHMAN_VERSION
 ARG CMAKE_VERSION
 
+ARG LLVM_VERSION=19
+
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 ARG DEFAULT_USER=dev
@@ -69,12 +71,31 @@ ENV PATH=${CMAKE_BIN_PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HO
 #         # Dev dependencies required by linters
 #         shellcheck \
 
+RUN ${BOOTSTAP_ABSPATH}/linux/update-apt.sh
+
 RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh --no-check "${APT_PACKAGES_SILENT}"
 
 RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh "${APT_PACKAGES}"
 
 RUN gem install bundler
+
+RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
+  ${ANDROID_HOME} \
+  ${SDK_VERSION} \
+  ${ANDROID_BUILD_VERSION} \
+  ${ANDROID_TOOLS_VERSION} \
+  ${CMAKE_VERSION} \
+  ${NDK_VERSION}
+
+RUN apt-get update && \
+  apt-get install -y \
+  clang-${LLVM_VERSION} \
+  lldb-${LLVM_VERSION} \
+  lld-${LLVM_VERSION}
+
 RUN rm -rf /var/lib/apt/lists/*;
+
+RUN ${BOOTSTAP_ABSPATH}/linux/clean-apt.sh
 
         # jq \
 
@@ -103,13 +124,6 @@ RUN rm -rf /var/lib/apt/lists/*;
 #     && rm -rf ${ANDROID_HOME}/.android \
 #     && chmod 777 -R /opt/android
 
-RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
-  ${ANDROID_HOME} \
-  ${SDK_VERSION} \
-  ${ANDROID_BUILD_VERSION} \
-  ${ANDROID_TOOLS_VERSION} \
-  ${CMAKE_VERSION} \
-  ${NDK_VERSION}
 # Disable git safe directory check as this is causing GHA to fail on GH Runners
 # RUN git config --global --add safe.directory '*'
 
