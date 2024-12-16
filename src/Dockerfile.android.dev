@@ -1,6 +1,6 @@
-ARG BASE_IMAGE_TAG
+ARG BASE_IMAGE
 
-FROM utkusarioglu/node-devcontainer:${BASE_IMAGE_TAG}
+FROM utkusarioglu/node-devcontainer:${BASE_IMAGE}
 
 LABEL Description="This image provides a base Android development environment for React Native, and may be used to run tests."
 
