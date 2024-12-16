@@ -4,19 +4,21 @@ FROM utkusarioglu/node-devcontainer:${BASE_TAG}
 
 USER root
 
+COPY home/scripts/ scripts/
+
 LABEL Description="This image provides a base Android development environment for React Native, and may be used to run tests."
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # set default build arguments
 # https://developer.android.com/studio#command-tools
-ARG SDK_VERSION=commandlinetools-linux-11076708_latest.zip
-ARG ANDROID_BUILD_VERSION=35
-ARG ANDROID_TOOLS_VERSION=35.0.0
-ARG NDK_VERSION=27.1.12297006
-ARG NODE_VERSION=18.20
-ARG WATCHMAN_VERSION=4.9.0
-ARG CMAKE_VERSION=3.22.1
+ARG SDK_VERSION
+ARG ANDROID_BUILD_VERSION
+ARG ANDROID_TOOLS_VERSION
+ARG NDK_VERSION
+ARG NODE_VERSION
+ARG WATCHMAN_VERSION
+ARG CMAKE_VERSION
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
@@ -29,45 +31,49 @@ ENV ADB_INSTALL_TIMEOUT=10
 ENV ANDROID_HOME=/opt/android
 ENV ANDROID_SDK_ROOT=${ANDROID_HOME}
 ENV ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/$NDK_VERSION
-
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV CMAKE_BIN_PATH=${ANDROID_HOME}/cmake/$CMAKE_VERSION/bin
-
 ENV PATH=${CMAKE_BIN_PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${PATH}
 
 
-# Install system dependencies
-RUN apt update -qq && apt install -qq -y --no-install-recommends \
-        apt-transport-https \
-        curl \
-        file \
-        gcc \
-        git \
-        g++ \
-        gnupg2 \
-        libgl1 \
-        libtcmalloc-minimal4 \
-        make \
-        openjdk-17-jdk-headless \
-        openssh-client \
-        patch \
-        python3 \
-        rsync \
-        ruby \
-        ruby-dev \
-        tzdata \
-        unzip \
-        sudo \
-        ninja-build \
-        zip \
-        ccache \
-        # Dev libraries requested by Hermes
-        libicu-dev \
-        # Dev dependencies required by linters
-        jq \
-        shellcheck \
-    && gem install bundler \
-    && rm -rf /var/lib/apt/lists/*;
+# # Install system dependencies
+# RUN apt update -qq && apt install -qq -y --no-install-recommends \
+#         apt-transport-https \
+#         curl \
+#         file \
+#         gcc \
+#         git \
+#         g++ \
+#         gnupg2 \
+#         libgl1 \
+#         libtcmalloc-minimal4 \
+#         make \
+#         openjdk-17-jdk-headless \
+#         openssh-client \
+#         patch \
+#         python3 \
+#         rsync \
+#         ruby \
+#         ruby-dev \
+#         tzdata \
+#         unzip \
+#         sudo \
+#         ninja-build \
+#         zip \
+#         ccache \
+#         # Dev libraries requested by Hermes
+#         libicu-dev \
+#         # Dev dependencies required by linters
+#         shellcheck \
+
+RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh --no-check "${APT_PACKAGES_SILENT}"
+
+RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh "${APT_PACKAGES}"
+
+RUN gem install bundler \
+RUN rm -rf /var/lib/apt/lists/*;
+
+        # jq \
 
         # python3-distutils \
         # libc++1-11 \
