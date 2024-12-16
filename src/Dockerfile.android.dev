@@ -125,4 +125,9 @@ RUN ${BOOTSTAP_ABSPATH}/linux/clean-apt.sh
 # Disable git safe directory check as this is causing GHA to fail on GH Runners
 # RUN git config --global --add safe.directory '*'
 
+RUN ${BOOTSTAP_ABSPATH}/linux/set-permissions.sh \
+  ${USER_ID} \
+  ${GROUP_ID} \
+  ${HOME_ABSPATH}
+
 USER ${USER_ID}
