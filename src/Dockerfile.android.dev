@@ -89,20 +89,27 @@ RUN rm -rf /var/lib/apt/lists/*;
 
 # Full reference at https://dl.google.com/android/repository/repository2-1.xml
 # download and unpack android
-RUN curl -sS https://dl.google.com/android/repository/${SDK_VERSION} -o /tmp/sdk.zip \
-    && mkdir -p ${ANDROID_HOME}/cmdline-tools \
-    && unzip -q -d ${ANDROID_HOME}/cmdline-tools /tmp/sdk.zip \
-    && mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest \
-    && rm /tmp/sdk.zip \
-    && yes | sdkmanager --licenses \
-    && yes | sdkmanager "platform-tools" \
-        "platforms;android-$ANDROID_BUILD_VERSION" \
-        "build-tools;$ANDROID_TOOLS_VERSION" \
-        "cmake;$CMAKE_VERSION" \
-        "ndk;$NDK_VERSION" \
-    && rm -rf ${ANDROID_HOME}/.android \
-    && chmod 777 -R /opt/android
+# RUN curl -sS https://dl.google.com/android/repository/${SDK_VERSION} -o /tmp/sdk.zip \
+#     && mkdir -p ${ANDROID_HOME}/cmdline-tools \
+#     && unzip -q -d ${ANDROID_HOME}/cmdline-tools /tmp/sdk.zip \
+#     && mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest \
+#     && rm /tmp/sdk.zip \
+#     && yes | sdkmanager --licenses \
+#     && yes | sdkmanager "platform-tools" \
+#         "platforms;android-$ANDROID_BUILD_VERSION" \
+#         "build-tools;$ANDROID_TOOLS_VERSION" \
+#         "cmake;$CMAKE_VERSION" \
+#         "ndk;$NDK_VERSION" \
+#     && rm -rf ${ANDROID_HOME}/.android \
+#     && chmod 777 -R /opt/android
 
+RUN ${BOOTSTAP_ABSPATH}/linux/install-android.sh \
+  ${ANDROID_HOME} \
+  ${SDK_VERSION} \
+  ${ANDROID_BUILD_VERSION} \
+  ${ANDROID_TOOLS_VERSION} \
+  ${CMAKE_VERSION} \
+  ${NDK_VERSION}
 # Disable git safe directory check as this is causing GHA to fail on GH Runners
 # RUN git config --global --add safe.directory '*'
 
