@@ -73,7 +73,7 @@ RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh --no-check "${APT_PACKAGES_SILENT}"
 
 RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh "${APT_PACKAGES}"
 
-RUN gem install bundler \
+RUN gem install bundler
 RUN rm -rf /var/lib/apt/lists/*;
 
         # jq \
