@@ -63,7 +63,10 @@ jobs:
               ccache
               libicu-dev
               shellcheck
-              ccache 
+              ccache
+              clang-18
+              lldb-18
+              lld-18
 
     steps:
       - uses: actions/checkout@v4
