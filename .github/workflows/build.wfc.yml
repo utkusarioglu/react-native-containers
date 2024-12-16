@@ -49,11 +49,11 @@ jobs:
           image_tag: ${{ matrix.images.image_tag }}
           dockerfile_path: ${{ matrix.images.dockerfile_path }}
           build_args: |
-            BASE_TAG=${{ matrix.images.base_tag }}
             BASE_IMAGE=${{ matrix.images.base_image }}
+            BASE_TAG=${{ matrix.images.base_tag }}
             APT_PACKAGES=${{ matrix.images.apt_packages }}
             APT_PACKAGES_SILENT=${{ matrix.images.apt_packages_silent }}
-            
+
           devcontainer_enabled: "false"
           devcontainer_subfolder: ${{ matrix.images.devcontainer_subfolder }}
           devcontainer_run_cmd_path: ${{ matrix.images.devcontainer_run_cmd_path }}
