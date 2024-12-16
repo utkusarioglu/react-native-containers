@@ -1,0 +1,15 @@
+name: Push
+
+on:
+  push
+
+jobs:
+  push:
+    uses: ./.github/workflows/build.wfc.yml
+    with:
+      image_tag: 35-23-ubuntu-test-15
+      base_tag: 23-ubuntu-test-15
+    secrets:
+      dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    

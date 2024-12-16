@@ -1,16 +1,16 @@
 name: build-and-push
 
-on:
-  push:
-    tags:
-      - "**.**.**"
-      - feature/**/**
-      - experiment/**/**/**
-    paths:
-      - src/**
-      - scripts/**
-      - .github/workflows/build-and-push.yml
-  workflow_dispatch:
+# on:
+  # push:
+  #   tags:
+  #     - "**.**.**"
+  #     - feature/**/**
+  #     - experiment/**/**/**
+  #   paths:
+  #     - src/**
+  #     - scripts/**
+  #     - .github/workflows/build-and-push.yml
+  # workflow_dispatch:
 
 env:
   BASE_IMAGE_TAG: latest
