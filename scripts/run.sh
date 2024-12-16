@@ -2,8 +2,9 @@
 
 set -eu
 
-tag=35-23-ubuntu-test-16
+test_num=17
+tag=35-23-ubuntu-test-
 image=utkusarioglu/react-native-android-devcontainer:${tag}
 
-docker image rm $image || true
-docker run -it --rm $image
+docker image rm ${image}$((test_num - 1)) || true
+docker run -it --rm ${image}${test_num}
