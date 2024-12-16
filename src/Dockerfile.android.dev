@@ -103,7 +103,7 @@ RUN rm -rf /var/lib/apt/lists/*;
 #     && rm -rf ${ANDROID_HOME}/.android \
 #     && chmod 777 -R /opt/android
 
-RUN ${BOOTSTAP_ABSPATH}/linux/install-android.sh \
+RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
   ${ANDROID_HOME} \
   ${SDK_VERSION} \
   ${ANDROID_BUILD_VERSION} \
