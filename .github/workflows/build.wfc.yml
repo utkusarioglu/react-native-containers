@@ -35,10 +35,10 @@ jobs:
             devcontainer_subfolder: src
             apt_packages: >-
               curl
-              # Dev libraries requested by Hermes
-              # libicu-dev
-              # Dev dependencies required by linters
-              # shellcheck
+            # Dev libraries requested by Hermes
+            # libicu-dev
+            # Dev dependencies required by linters
+            # shellcheck
             apt_packages_silent: >-
               apt-transport-https
               file

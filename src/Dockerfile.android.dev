@@ -12,6 +12,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # set default build arguments
 # https://developer.android.com/studio#command-tools
+ARG APT_PACKAGES
+ARG APT_PACKAGES_SILENT
+
 ARG SDK_VERSION
 ARG ANDROID_BUILD_VERSION
 ARG ANDROID_TOOLS_VERSION
