@@ -85,11 +85,11 @@ RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
   ${CMAKE_VERSION} \
   ${NDK_VERSION}
 
-RUN apt-get update && \
-  apt-get install -y \
-  clang-${LLVM_VERSION} \
-  lldb-${LLVM_VERSION} \
-  lld-${LLVM_VERSION}
+# RUN apt-get update && \
+#   apt-get install -y \
+#   clang-${LLVM_VERSION} \
+#   lldb-${LLVM_VERSION} \
+#   lld-${LLVM_VERSION}
 
 RUN rm -rf /var/lib/apt/lists/*;
 

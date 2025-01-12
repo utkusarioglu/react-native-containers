@@ -2,7 +2,7 @@
 
 set -eu
 
-test_num=17
+test_num=18
 tag=35-23-ubuntu-test-
 image=utkusarioglu/react-native-android-devcontainer:${tag}
 
