@@ -28,13 +28,22 @@ jobs:
             base_image: node-devcontainer
             base_tag: ${{ inputs.base_tag }}
             image_tag: ${{ inputs.image_tag }}
+
+            sdk_version: commandlinetools-linux-11076708_latest.zip
+            android_build_version: 35
+            android_tools_version: 35.0.0
+            ndk_version: 27.2.12479018
+            cmake_version: 3.31.4
+            # node_version: 18.20
+            # watchman_version: 4.9.0
+
             docker_context: src
             dockerfile_path: src/Dockerfile.android.dev
             devcontainer_run_cmd_path: /home/dev/scripts/bootstrap/node/check-devcontainer.sh
             dockerhub_repo_readme_file_path: src/DOCKER_README.md
             devcontainer_subfolder: src
-            apt_packages: >-
-              curl
+            apt_packages: ""
+              
             # Dev libraries requested by Hermes
             # libicu-dev
             # Dev dependencies required by linters
@@ -52,11 +61,9 @@ jobs:
               openssh-client
               patch
               python3
-              rsync
               ruby
               ruby-dev
               tzdata
-              unzip
               sudo
               ninja-build
               zip
@@ -85,14 +92,11 @@ jobs:
             BASE_TAG=${{ matrix.images.base_tag }}
             APT_PACKAGES=${{ matrix.images.apt_packages }}
             APT_PACKAGES_SILENT=${{ matrix.images.apt_packages_silent }}
-
-            SDK_VERSION=commandlinetools-linux-11076708_latest.zip
-            ANDROID_BUILD_VERSION=35
-            ANDROID_TOOLS_VERSION=35.0.0
-            NDK_VERSION=27.1.12297006
-            NODE_VERSION=18.20
-            WATCHMAN_VERSION=4.9.0
-            CMAKE_VERSION=3.22.1
+            SDK_VERSION=${{ matrix.images.sdk_version}}
+            ANDROID_BUILD_VERSION=${{ matrix.images.android_build_version }}
+            ANDROID_TOOLS_VERSION=${{ matrix.images.android_tools_version }}
+            NDK_VERSION=${{ matrix.images.ndk_version }}
+            CMAKE_VERSION=${{ matrix.images.cmake_version }}
           devcontainer_enabled: "false"
           devcontainer_subfolder: ${{ matrix.images.devcontainer_subfolder }}
           devcontainer_run_cmd_path: ${{ matrix.images.devcontainer_run_cmd_path }}
