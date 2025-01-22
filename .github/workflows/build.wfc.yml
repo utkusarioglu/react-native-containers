@@ -28,15 +28,11 @@ jobs:
             base_image: node-devcontainer
             base_tag: ${{ inputs.base_tag }}
             image_tag: ${{ inputs.image_tag }}
-
             sdk_version: commandlinetools-linux-11076708_latest.zip
             android_build_version: 35
             android_tools_version: 35.0.0
             ndk_version: 27.2.12479018
-            cmake_version: 3.30.6
-            # node_version: 18.20
-            # watchman_version: 4.9.0
-
+            cmake_version: 3.22.1
             docker_context: src
             dockerfile_path: src/Dockerfile.android.dev
             devcontainer_run_cmd_path: /home/dev/scripts/bootstrap/node/check-devcontainer.sh

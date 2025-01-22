@@ -10,8 +10,6 @@ LABEL Description="This image provides a base Android development environment fo
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# set default build arguments
-# https://developer.android.com/studio#command-tools
 ARG APT_PACKAGES
 ARG APT_PACKAGES_SILENT
 
@@ -19,8 +17,6 @@ ARG SDK_VERSION
 ARG ANDROID_BUILD_VERSION
 ARG ANDROID_TOOLS_VERSION
 ARG NDK_VERSION
-# ARG NODE_VERSION
-# ARG WATCHMAN_VERSION
 ARG CMAKE_VERSION
 
 ARG USER_ID=1000
@@ -29,7 +25,6 @@ ARG DEFAULT_USER=dev
 ARG HOME_ABSPATH=/home/${DEFAULT_USER}
 ARG BOOTSTAP_ABSPATH=${HOME_ABSPATH}/scripts/bootstrap
 
-# set default environment variables, please don't remove old env for compatibilty issue
 ENV ADB_INSTALL_TIMEOUT=10
 ENV ANDROID_HOME=/opt/android
 ENV ANDROID_SDK_ROOT=${ANDROID_HOME}
@@ -37,37 +32,6 @@ ENV ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/$NDK_VERSION
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV CMAKE_BIN_PATH=${ANDROID_HOME}/cmake/${CMAKE_VERSION}/bin
 ENV PATH=${CMAKE_BIN_PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${PATH}
-
-
-# # Install system dependencies
-# RUN apt update -qq && apt install -qq -y --no-install-recommends \
-#         apt-transport-https \
-#         curl \
-#         file \
-#         gcc \
-#         git \
-#         g++ \
-#         gnupg2 \
-#         libgl1 \
-#         libtcmalloc-minimal4 \
-#         make \
-#         openjdk-17-jdk-headless \
-#         openssh-client \
-#         patch \
-#         python3 \
-#         rsync \
-#         ruby \
-#         ruby-dev \
-#         tzdata \
-#         unzip \
-#         sudo \
-#         ninja-build \
-#         zip \
-#         ccache \
-#         # Dev libraries requested by Hermes
-#         libicu-dev \
-#         # Dev dependencies required by linters
-#         shellcheck \
 
 RUN ${BOOTSTAP_ABSPATH}/linux/update-apt.sh
 
@@ -85,45 +49,9 @@ RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
   ${CMAKE_VERSION} \
   ${NDK_VERSION}
 
-# RUN apt-get update && \
-#   apt-get install -y \
-#   clang-${LLVM_VERSION} \
-#   lldb-${LLVM_VERSION} \
-#   lld-${LLVM_VERSION}
-
 RUN rm -rf /var/lib/apt/lists/*;
 
 RUN ${BOOTSTAP_ABSPATH}/linux/clean-apt.sh
-
-        # jq \
-
-        # python3-distutils \
-        # libc++1-11 \
-# # install nodejs using n
-# RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n \
-#     && bash n $NODE_VERSION \
-#     && rm n \
-#     && npm install -g n \
-#     && npm install -g yarn
-
-# Full reference at https://dl.google.com/android/repository/repository2-1.xml
-# download and unpack android
-# RUN curl -sS https://dl.google.com/android/repository/${SDK_VERSION} -o /tmp/sdk.zip \
-#     && mkdir -p ${ANDROID_HOME}/cmdline-tools \
-#     && unzip -q -d ${ANDROID_HOME}/cmdline-tools /tmp/sdk.zip \
-#     && mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/latest \
-#     && rm /tmp/sdk.zip \
-#     && yes | sdkmanager --licenses \
-#     && yes | sdkmanager "platform-tools" \
-#         "platforms;android-$ANDROID_BUILD_VERSION" \
-#         "build-tools;$ANDROID_TOOLS_VERSION" \
-#         "cmake;$CMAKE_VERSION" \
-#         "ndk;$NDK_VERSION" \
-#     && rm -rf ${ANDROID_HOME}/.android \
-#     && chmod 777 -R /opt/android
-
-# Disable git safe directory check as this is causing GHA to fail on GH Runners
-# RUN git config --global --add safe.directory '*'
 
 RUN ${BOOTSTAP_ABSPATH}/linux/set-permissions.sh \
   ${USER_ID} \
