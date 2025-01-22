@@ -33,7 +33,7 @@ jobs:
             android_build_version: 35
             android_tools_version: 35.0.0
             ndk_version: 27.2.12479018
-            cmake_version: 3.31.4
+            cmake_version: 3.30.6
             # node_version: 18.20
             # watchman_version: 4.9.0
 
