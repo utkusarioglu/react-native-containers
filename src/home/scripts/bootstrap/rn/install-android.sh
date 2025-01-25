@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -euxo pipefail
 bash --version
 
 ARGS=(
@@ -11,8 +11,7 @@ ARGS=(
   cmake_version
   ndk_version
 )
-. ${0%/*}/../linux/parse-args.sh
-
+. /home/dev/scripts/utils/parse-args.sh
 
 curl -sS https://dl.google.com/android/repository/${sdk_version} -o /tmp/sdk.zip
 mkdir -p ${android_home}/cmdline-tools
