@@ -19,12 +19,13 @@ unzip -q -d ${android_home}/cmdline-tools /tmp/sdk.zip
 mv ${android_home}/cmdline-tools/cmdline-tools ${android_home}/cmdline-tools/latest
 rm /tmp/sdk.zip 
 
-yes | sdkmanager --licenses 
+yes | sdkmanager --licenses
 yes | sdkmanager "platform-tools" \
   "platforms;android-${android_build_version}" \
   "build-tools;${android_tools_version}" \
   "cmake;${cmake_version}" \
-  "ndk;${ndk_version}" 
+  "ndk;${ndk_version}" \
+  || true
 
 rm -rf ${android_home}/.android \
 
