@@ -29,11 +29,14 @@ jobs:
             base_tag: ${{ inputs.base_tag }}
             image_tag: ${{ inputs.image_tag }}
             sdk_version: commandlinetools-linux-11076708_latest.zip
-            android_build_version: 35
-            android_tools_version: 35.0.0
+            android_build_version: 36
+            # build_tools_version: 35.0.0
+            build_tools_version: 36.0.0
             # ndk_version: 27.2.12479018
-            ndk_version: 28.0.13004108
-            cmake_version: 3.22.1
+            # ndk_version: 28.0.13004108
+            ndk_version: 29.0.13113456
+            # cmake_version: 3.22.1
+            cmake_version: 3.31.6
             # cmake_version: 4.0.0
             docker_context: src
             dockerfile_path: src/Dockerfile.android.dev
@@ -92,7 +95,7 @@ jobs:
             APT_PACKAGES_SILENT=${{ matrix.images.apt_packages_silent }}
             SDK_VERSION=${{ matrix.images.sdk_version}}
             ANDROID_BUILD_VERSION=${{ matrix.images.android_build_version }}
-            ANDROID_TOOLS_VERSION=${{ matrix.images.android_tools_version }}
+            BUILD_TOOLS_VERSION=${{ matrix.images.build_tools_version }}
             NDK_VERSION=${{ matrix.images.ndk_version }}
             CMAKE_VERSION=${{ matrix.images.cmake_version }}
           devcontainer_enabled: "false"

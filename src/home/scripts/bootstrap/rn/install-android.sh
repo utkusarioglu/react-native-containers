@@ -9,7 +9,7 @@ ARGS=(
   android_home
   sdk_version
   android_build_version
-  android_tools_version
+  build_tools_version
   cmake_version
   ndk_version
 )
@@ -28,7 +28,7 @@ sdkmanager --list
 yes | sdkmanager --licenses
 yes | sdkmanager "platform-tools" \
   "platforms;android-${android_build_version}" \
-  "build-tools;${android_tools_version}" \
+  "build-tools;${build_tools_version}" \
   "cmake;${cmake_version}" \
   "ndk;${ndk_version}" 
 
