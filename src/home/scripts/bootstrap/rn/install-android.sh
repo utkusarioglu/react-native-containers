@@ -21,6 +21,9 @@ unzip -q -d ${android_home}/cmdline-tools /tmp/sdk.zip
 mv ${android_home}/cmdline-tools/cmdline-tools ${android_home}/cmdline-tools/latest
 rm /tmp/sdk.zip 
 
+# List available packages for future upgrades
+sdkmanager --list
+
 # #1 Either of these two fails with `set -o pipefail`
 yes | sdkmanager --licenses
 yes | sdkmanager "platform-tools" \
