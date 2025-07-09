@@ -33,6 +33,8 @@ ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV CMAKE_BIN_PATH=${ANDROID_HOME}/cmake/${CMAKE_VERSION}/bin
 ENV PATH=${CMAKE_BIN_PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/emulator:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${PATH}
 
+RUN ${BOOTSTAP_ABSPATH}/linux/clean-apt.sh
+
 RUN ${BOOTSTAP_ABSPATH}/linux/update-apt.sh
 
 RUN ${BOOTSTAP_ABSPATH}/linux/install-apt.sh --no-check "${APT_PACKAGES_SILENT}"
@@ -48,8 +50,6 @@ RUN ${BOOTSTAP_ABSPATH}/rn/install-android.sh \
   ${ANDROID_BUILD_TOOLS_VERSION} \
   ${CMAKE_VERSION} \
   ${NDK_VERSION}
-
-RUN rm -rf /var/lib/apt/lists/*;
 
 RUN ${BOOTSTAP_ABSPATH}/linux/clean-apt.sh
 
