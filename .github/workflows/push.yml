@@ -11,7 +11,7 @@ jobs:
   push:
     uses: ./.github/workflows/build.wfc.yml
     with:
-      image_tag: 35-23-ubuntu-test-26
+      image_tag: 36-23-ubuntu-test-26
       base_tag: 23-ubuntu-test-26
     secrets:
       dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}

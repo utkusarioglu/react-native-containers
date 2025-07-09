@@ -42,7 +42,7 @@ jobs:
             ndk_version: 29.0.13599879
 
             # cmake_version: 3.31.6
-            cmake_version: 4.1.0
+            cmake_version: 4.0.2
 
             docker_context: src
             dockerfile_path: src/Dockerfile.android.dev
