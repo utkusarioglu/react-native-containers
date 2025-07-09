@@ -28,16 +28,22 @@ jobs:
             base_image: node-devcontainer
             base_tag: ${{ inputs.base_tag }}
             image_tag: ${{ inputs.image_tag }}
-            sdk_version: commandlinetools-linux-11076708_latest.zip
+          
+            # https://developer.android.com/studio#command-line-tools-only
+            # sdk_version: commandlinetools-linux-11076708_latest.zip
+            sdk_version: commandlinetools-linux-13114758_latest.zip
+
+            # https://developer.android.com/tools/releases/platforms
             android_platform_version: 36
-            # build_tools_version: 35.0.0
             android_build_tools_version: 36.0.0
-            # ndk_version: 27.2.12479018
-            # ndk_version: 28.0.13004108
-            ndk_version: 29.0.13113456
-            # cmake_version: 3.22.1
-            cmake_version: 3.31.6
-            # cmake_version: 4.0.0
+
+            # https://groups.google.com/g/android-ndk-announce
+            # ndk_version: 29.0.13113456
+            ndk_version: 29.0.13599879
+
+            # cmake_version: 3.31.6
+            cmake_version: 4.1.0
+
             docker_context: src
             dockerfile_path: src/Dockerfile.android.dev
             devcontainer_run_cmd_path: /home/dev/scripts/bootstrap/node/check-devcontainer.sh
