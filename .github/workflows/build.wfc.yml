@@ -12,10 +12,10 @@ on:
         type: string
         required: true
     secrets:
-      dockerhub_username: 
+      dockerhub_username:
         required: true
-      dockerhub_token: 
-        required: true 
+      dockerhub_token:
+        required: true
 
 jobs:
   build:
